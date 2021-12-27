@@ -1,22 +1,26 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
+import { makeStyles } from '@material-ui/core/styles'
+
 interface TitleProps {
   value: string
+  size?: number
 }
 
-const StyledDiv = styled.div`
-  font-size: 60px;
-  text-align: center;
-`
+
+
+const useStyles = (props) => makeStyles({
+  title: {
+    fontSize: props.size || 24,
+    textAlign: 'center',
+  }
+})
 
 
 const Title = (props:TitleProps) => {
-  return(
-    <>
-    <StyledDiv>{props.value}</StyledDiv>
-    </>
-  )
+  const classes = useStyles(props)();
+  return <div className={classes.title}>{props.value}</div>
 }
 
 export default Title

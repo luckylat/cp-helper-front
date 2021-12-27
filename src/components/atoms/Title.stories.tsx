@@ -9,5 +9,6 @@ const Template = (args) => <Title {...args} />
 
 export const Default = Template.bind({})
 Default.args = {
-  value:"This is Title"
+  value: "This is Title",
+  size: 60
 }
