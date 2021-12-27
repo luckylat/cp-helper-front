@@ -10,6 +10,7 @@
 
 # production
 /build
+/stories
 
 # misc
 .DS_Store
