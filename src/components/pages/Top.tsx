@@ -32,7 +32,13 @@ const Top = () => {
       alert("TextField is Empty");
       return
     }
-    StreakFetcher(InputData.current.value)
+    StreakFetcher(InputData.current.value).then((ret) => {
+      if(ret){
+        console.log("OK!")
+      }else{
+        console.log("NG...")
+      }
+    })
   }
   return(
   <>
