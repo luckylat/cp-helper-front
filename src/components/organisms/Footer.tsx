@@ -19,9 +19,6 @@ const useStyles = () => makeStyles({
 
     height: '2rem',
     width:  '100vw',
-
-    
-
   }
 })
 

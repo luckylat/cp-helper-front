@@ -14,14 +14,10 @@ const StyledInput = styled.input`
   
 `
 
-
-const Input = (props:InputProps) => {
-
-  return (
-    <>
-      <StyledInput type={props.type || 'text'} value={props.value} placeholder={props.placeholder}/>
-    </>
-  )
-}
+const Input = React.forwardRef((props:InputProps,ref:React.Ref<HTMLInputElement>) => (
+  <>
+    <StyledInput ref={ref} type={props.type || 'text'} value={props.value} placeholder={props.placeholder}/>
+  </>
+))
 
 export default Input
