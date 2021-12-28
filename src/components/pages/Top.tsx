@@ -10,13 +10,21 @@ import Button from '../atoms/Button'
 
 import Grid from '@material-ui/core/Grid'
 
+import axios from 'axios'
+
 const StyledDiv = styled.div`
   height: calc(100vh - 190px);
   width: 100vw;
   
 `
+const ScriptData = () => {
+  axios.get('/api/user').then((res) => {
+    console.log(res)
+  })
+}
 
-const Top = () => (
+const Top = () => {
+  return(
   <>
     <Header />
     <StyledDiv>
@@ -27,11 +35,12 @@ const Top = () => (
         <Input placeholder="Username(AtCoder)" />
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
-        <Button label="Go!" action={()=>(window.alert("Hello!"))} />
+        <Button label="Go!" action={ScriptData} />
       </Grid>
     </StyledDiv>
     <Footer />
   </>
-)
+  )
+}
 
 export default Top
