@@ -17,7 +17,7 @@ return new Promise((resolve,reject) => {
           //今日投げましたか？
           const dataTime = new Date(element.epoch_second*1000);
           const today = new Date();
-          if(dataTime.toLocaleDateString() === today.toLocaleDateString()){
+          if(submission.has(element.problem_id) && dataTime.toLocaleDateString() === today.toLocaleDateString()){
             submitted = true;
           }
           //setに挿入

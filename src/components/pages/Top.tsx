@@ -1,4 +1,4 @@
-import * as React from "react"
+import React,{useState} from "react"
 import styled from "styled-components"
 
 import Grid from '@material-ui/core/Grid'
@@ -26,17 +26,19 @@ const StyledDiv = styled.div`
 
 const Top = () => {
   const InputData = React.createRef<HTMLInputElement>();
+  const [state,setState] = useState("let fill the input field above!");
   const ScriptData = () => {
     console.log("Clicked!")
     if(!InputData.current.value){
-      alert("TextField is Empty");
+      alert("no Input");
       return
     }
+    setState("Fetching...");
     StreakFetcher(InputData.current.value).then((ret) => {
       if(ret){
-        console.log("OK!")
+        setState("Today, you already got unique-AC");
       }else{
-        console.log("NG...")
+        setState("Today, you don't get unique-AC yet.");
       }
     })
   }
@@ -52,6 +54,9 @@ const Top = () => {
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
         <Button label='Go!' action={ScriptData} />
+      </Grid>
+      <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
+        <div>{state}</div>
       </Grid>
     </StyledDiv>
     <Footer />
