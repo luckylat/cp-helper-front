@@ -10,7 +10,7 @@ import Title from '../atoms/Title'
 import Input from '../atoms/Input'
 import Button from '../atoms/Button'
 
-import StreakFetcher from '../../utils/Streak'
+import AtCoderStreakFetcher from '../../utils/Streak'
 
 
 
@@ -25,19 +25,24 @@ const StyledDiv = styled.div`
 
 const Top = () => {
   const InputData = React.createRef<HTMLInputElement>();
-  const [state,setState] = useState("let fill the input field above!");
+  const [status,setStatus] = useState("let fill the input field above!");
   const ScriptData = () => {
+    const UserName = InputData.current.value;
     console.log("Clicked!")
-    if(!InputData.current.value){
+    //ToDo:Inputの中身をHidden状態にする
+
+    if(!UserName){
       alert("no Input");
       return
     }
-    setState("Fetching...");
-    StreakFetcher(InputData.current.value).then((ret) => {
-      if(ret){
-        setState("Today, you already got unique-AC");
+    setStatus("Fetching...");
+    AtCoderStreakFetcher(UserName).then((ret) => {
+      if(ret===1){
+        setStatus(`Today, ${UserName} already got unique-AC.`);
+      }else if(ret===0){
+        setStatus(`Today, ${UserName} don't get unique-AC yet.`);
       }else{
-        setState("Today, you don't get unique-AC yet.");
+        setStatus(`${UserName} doesn't have any submittion. (misspelled?)`)
       }
     })
   }
@@ -55,7 +60,7 @@ const Top = () => {
         <Button label='Go!' action={ScriptData} />
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
-        <div>{state}</div>
+        <div>{status}</div>
       </Grid>
     </StyledDiv>
     <Footer />
