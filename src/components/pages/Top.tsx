@@ -9,6 +9,7 @@ import Footer from '../organisms/Footer'
 import Title from '../atoms/Title'
 import Input from '../atoms/Input'
 import Button from '../atoms/Button'
+import Dropdown from '../atoms/Dropdown'
 
 import AtCoderStreakFetcher from '../../utils/Streak'
 
@@ -17,41 +18,64 @@ import AtCoderStreakFetcher from '../../utils/Streak'
 
 
 const StyledDiv = styled.div`
-  height: calc(100vh - 190px);
+  height: calc(100vh - 140px);
   width: 100vw;
   
 `
 
 
 const Top = () => {
-  const InputData = React.createRef<HTMLInputElement>();
   const [status,setStatus] = useState("let fill the input field above!");
+  const InputData = React.createRef<HTMLInputElement>();
+  const TargetedCPSite = React.createRef<HTMLSelectElement>();
   const ScriptData = () => {
     const UserName = InputData.current.value;
+    const SelectedCPSite = TargetedCPSite.current.value;
     console.log("Clicked!")
-    //ToDo:Inputの中身をHidden状態にする
+    //ToDo:ボタンを押した時、Inputの中身を固定状態にする → クロールが終わったら解除する
 
     if(!UserName){
       alert("no Input");
       return
     }
     setStatus("Fetching...");
-    AtCoderStreakFetcher(UserName).then((ret) => {
-      if(ret===1){
-        setStatus(`Today, ${UserName} already got unique-AC.`);
-      }else if(ret===0){
-        setStatus(`Today, ${UserName} don't get unique-AC yet.`);
-      }else{
-        setStatus(`${UserName} doesn't have any submittion. (misspelled?)`)
-      }
-    })
+    switch(SelectedCPSite){
+      case 'AtCoder':
+        AtCoderStreakFetcher(UserName).then((ret) => {
+          if(ret===1){
+            setStatus(`Today, ${UserName} already got unique-AC.`);
+          }else if(ret===0){
+            setStatus(`Today, ${UserName} don't get unique-AC yet.`);
+          }else{
+            setStatus(`${UserName} doesn't have any submittion. (misspelled?)`)
+          }
+        })
+        break;
+      case 'Codeforces':
+        console.log("WIP!!! Codeforces")
+        break;
+      case 'yukicoder':
+        console.log("WIP!!! yukicoder")
+        break;
+      default:
+        console.log("If you see this, this site have some error.")
+    }
+    
   }
+
+  const cpSite = {AtCoder:'AtCoder',Codeforces:'Codeforces',yukicoder:'yukicoder'}
   return(
   <>
     <Header />
     <StyledDiv>
-      <Grid item xs={12} style={{ margin:'100px' }}>
-        <Title value='CP-Streak-Helper' size={60} />
+      <Grid item xs={12} style={{ margin:'50px' }}>
+        <Title value='CP-Streak-Helper' size={40} />
+      </Grid>
+      <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
+        <Dropdown ref={TargetedCPSite} items={Object.keys(cpSite).map((item:string,index:number) => {
+          return {text:item}
+        })}
+      />
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
         <Input ref={InputData} placeholder='Username(AtCoder)' />
