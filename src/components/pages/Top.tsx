@@ -11,7 +11,7 @@ import Input from '../atoms/Input'
 import Button from '../atoms/Button'
 import Dropdown from '../atoms/Dropdown'
 
-import AtCoderStreakFetcher from '../../utils/Streak'
+import FilterOfStreakFetcher from "../../utils/Streak"
 
 
 
@@ -39,27 +39,15 @@ const Top = () => {
       return
     }
     setStatus("Fetching...");
-    switch(SelectedCPSite){
-      case 'AtCoder':
-        AtCoderStreakFetcher(UserName).then((ret) => {
-          if(ret===1){
-            setStatus(`Unique accepted`);
-          }else if(ret===0){
-            setStatus(`Not unique accepted`);
-          }else{
-            setStatus(`Error`)
-          }
-        })
-        break;
-      case 'Codeforces':
-        console.log("WIP!!! Codeforces")
-        break;
-      case 'yukicoder':
-        console.log("WIP!!! yukicoder")
-        break;
-      default:
-        console.log("If you see this, this site have some error.")
-    }
+    FilterOfStreakFetcher(SelectedCPSite,UserName).then((ret) => {
+      if(ret===1){
+        setStatus(`Unique accepted`);
+      }else if(ret===0){
+        setStatus(`Not unique accepted`);
+      }else{
+        setStatus(`Error`)
+      }
+    })
     
   }
 
@@ -78,7 +66,7 @@ const Top = () => {
       />
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
-        <Input ref={InputData} placeholder='Username(AtCoder)' />
+        <Input ref={InputData} placeholder='Username' />
       </Grid>
       <Grid item xs={12} style={{ textAlign:'center', margin:'50px' }}>
         <Button label='Go!' action={ScriptData} />
