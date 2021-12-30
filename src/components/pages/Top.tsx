@@ -43,11 +43,11 @@ const Top = () => {
       case 'AtCoder':
         AtCoderStreakFetcher(UserName).then((ret) => {
           if(ret===1){
-            setStatus(`Today, ${UserName} already got unique-AC.`);
+            setStatus(`Unique accepted`);
           }else if(ret===0){
-            setStatus(`Today, ${UserName} don't get unique-AC yet.`);
+            setStatus(`Not unique accepted`);
           }else{
-            setStatus(`${UserName} doesn't have any submittion. (misspelled?)`)
+            setStatus(`Error`)
           }
         })
         break;
