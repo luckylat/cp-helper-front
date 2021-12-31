@@ -64,7 +64,7 @@ const CodeforcesStreakFetcher = (UserName: string) => {
     let submission = new Set()
     const today = new Date();
     let submitted = false;
-  console.log("crawling...");
+    console.log("crawling...");
     axios.get(`${API_BASE_URL}?handle=${UserName}`).then((res) => {
       if(res.data.length === 0){
         return resolve(-1);
@@ -94,6 +94,39 @@ const CodeforcesStreakFetcher = (UserName: string) => {
 }
 
 //ToDo: yukicoder
+const yukicoderStreakFetcher = (UserName: string) => {
+  return new Promise((resolve,reject) => {
+    const API_BASE_URL = "https://yukicoder.me/api/v1/solved"
+
+    let submission = new Set()
+    const today = new Date();
+    let submitted = false;
+    console.log("crawling...");
+    axios.get(`${API_BASE_URL}/name/${UserName}/first`).then((res) => {
+      if(res.data.length === 0){
+        return resolve(-1);
+      }
+      console.log(res);
+      res.data.forEach((element) => {
+        //今日投げましたか？
+        
+        const dataTime = new Date(element.Date);
+        if(!submission.has({ContestId:element.contestid,ProblemIndex:element.index}) && dataTime.toLocaleDateString() === today.toLocaleDateString()){
+          submitted = true;
+        }
+        //setに挿入
+        submission.add({ContestId:element.contestid,ProblemIndex:element.index});
+      })
+      console.log("crawled!",submitted);
+      return resolve(submitted?1:0);
+    }).catch((e) => {
+      console.log(e);
+      return resolve(-1);
+      //TODO: 後でやる
+    });
+    
+  })
+}
 
 
 //ToDo 言語に関するStreakも用意する
@@ -107,7 +140,7 @@ const FilterOfStreakFetcher = (CPSite:string, UserName:string) => {
       case 'Codeforces':
         return resolve(CodeforcesStreakFetcher(UserName));
       case 'yukicoder':
-        return resolve(-1);
+        return resolve(yukicoderStreakFetcher(UserName));
       default:
         return resolve(-1);
     }
