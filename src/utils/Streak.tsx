@@ -24,9 +24,7 @@ const AtCoderStreakFetcher = (UserName: string) => {
         if(allSubmission === 0){
           return resolve(-1);
         }
-        console.log(res);
         epochTimer = res.data[res.data.length-1].epoch_second;
-        console.log(epochTimer,res.data[res.data.length-1].problem_id,res.data.length)
         res.data.forEach((element) => {
           if(element.result === "AC"){
             //今日投げましたか？
@@ -106,7 +104,6 @@ const yukicoderStreakFetcher = (UserName: string) => {
       if(res.data.length === 0){
         return resolve(-1);
       }
-      console.log(res);
       res.data.forEach((element) => {
         //今日投げましたか？
         
