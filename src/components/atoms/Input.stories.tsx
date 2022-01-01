@@ -1,13 +1,15 @@
-import Input from './Input'
+import Input from './Input';
 
-export default{
+export default {
   title: 'atoms/Input',
-  component: Input
+  component: Input,
+};
+
+function Template(args) {
+  return <Input {...args} />;
 }
 
-const Template = (args) => <Input {...args} />
-
-export const Default = Template.bind({})
+export const Default = Template.bind({});
 Default.args = {
-  placeholder: 'AtCoder'
-}
+  placeholder: 'AtCoder',
+};

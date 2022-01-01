@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   env: {
     browser: true,
@@ -18,6 +19,35 @@ module.exports = {
     'react',
     '@typescript-eslint',
   ],
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: path.resolve(__dirname, './webpack.config.js'),
+      },
+    },
+  },
   rules: {
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
+
+    'react/prop-types': 'off',
+    'react/require-default-props': 'off',
+
+    'react/jsx-filename-extension': [
+      'error',
+      {
+        extensions: ['.jsx','tsx']
+      }
+    ],
+
+    'import/extensions': [
+      'error', 'always',
+      {
+        'js':'never',
+        'jsx':'never',
+        'ts':'never',
+        'tsx':'never',
+      },
+    ],
   },
 };

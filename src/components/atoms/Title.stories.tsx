@@ -1,14 +1,16 @@
-import Title from './Title'
+import Title from './Title';
 
-export default{
+export default {
   title: 'atoms/Title',
-  component: Title
+  component: Title,
+};
+
+function Template(args) {
+  return <Title {...args} />;
 }
 
-const Template = (args) => <Title {...args} />
-
-export const Default = Template.bind({})
+export const Default = Template.bind({});
 Default.args = {
-  value: "This is Title",
-  size: 60
-}
+  value: 'This is Title',
+  size: 60,
+};

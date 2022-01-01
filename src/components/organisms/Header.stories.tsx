@@ -1,10 +1,12 @@
-import Header from './Header'
+import Header from './Header';
 
-export default{
+export default {
   title: 'organisms/Header',
-  component: Header
+  component: Header,
+};
+
+function Template() {
+  return <Header />;
 }
 
-const Template = () => <Header />
-
-export const Default = Template.bind({})
+export const Default = Template.bind({});
