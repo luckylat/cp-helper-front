@@ -93,11 +93,7 @@ const yukicoderStreakFetcher = (UserName: string) => new Promise((resolve, rejec
       res.data.forEach((element) => {
         //  今日投げましたか？
         const dataTime = new Date(element.Date).toLocaleDateString();
-        //  ToDo:バグなので後で直す
-        const SubmissionDetail = {
-          ContestId: element.contestid,
-          ProblemIndex: element.index,
-        };
+        const SubmissionDetail = element.ProblemId;
         if (!submission.has(SubmissionDetail) && dataTime === today) {
           submitted = true;
         }
