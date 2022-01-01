@@ -1,150 +1,130 @@
-import axios from 'axios'
+import axios from 'axios';
 
-//ToDo:それぞれのサイトに対してのStreakに関する返り値を同じにする
+//  ToDo:それぞれのサイトに対してのStreakに関する返り値を同じにする
 
-
-//一回のみ呼び出し
-//返り値
-//1: Streakは繋がっている
-//0: Streakは繋がっていない
-//-1: ユーザーが存在しない、もしくは提出履歴がない
-const AtCoderStreakFetcher = (UserName: string) => {
-  return new Promise((resolve,reject) => {
-    const API_BASE_URL = "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions";
-
-    let epochTimer = 0;
-    const today = new Date();
-    let submission = new Set()
-    let submitted = false;
-    let allSubmission = 0;
-    console.log("crawling...");
-    const Fetcher = setInterval(() => {
-      axios.get(`${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`).then((res) => {
-        allSubmission += res.data.length;  
-        if(allSubmission === 0){
-          return resolve(-1);
+//  一回のみ呼び出し
+//  返り値
+//  1: Streakは繋がっている
+//  0: Streakは繋がっていない
+//  -1: ユーザーが存在しない、もしくは提出履歴がない
+const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve, reject) => {
+  const API_BASE_URL = 'https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions';
+  const today = new Date().toLocaleDateString();
+  const submission = new Set();
+  let submitted = false;
+  let allSubmission = 0;
+  let epochTimer = 0;
+  const Fetcher = setInterval(() => {
+    axios
+      .get(`${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`)
+      .then((res) => {
+        allSubmission += res.data.length;
+        if (allSubmission === 0) {
+          clearInterval(Fetcher);
+          reject();
         }
-        console.log(res);
-        epochTimer = res.data[res.data.length-1].epoch_second;
-        console.log(epochTimer,res.data[res.data.length-1].problem_id,res.data.length)
+        epochTimer = res.data[res.data.length - 1].epoch_second;
         res.data.forEach((element) => {
-          if(element.result === "AC"){
-            //今日投げましたか？
-            const dataTime = new Date(element.epoch_second*1000);
-            
-            if(!submission.has(element.problem_id) && dataTime.toLocaleDateString() === today.toLocaleDateString()){
+          if (element.result === 'AC') {
+            //  今日投げましたか？
+            const dataTime = new Date(
+              element.epoch_second * 1000,
+            ).toLocaleDateString();
+            const SubmissionDetail = element.problem_id;
+            if (!submission.has(SubmissionDetail) && dataTime === today) {
               submitted = true;
             }
-            //setに挿入
-            submission.add(element.problem_id);
-            
+            submission.add(SubmissionDetail);
           }
-        })
-        if(res.data.length < 500){
-          console.log("crawled!",submitted);
+        });
+        if (res.data.length < 500) {
           clearInterval(Fetcher);
-          return resolve(submitted?1:0);
+          resolve(submitted ? 1 : 0);
         }
-      }).catch((e) => {
-        //TODO: 後でやる
-      });
-    },3000);
-    
-  })
-}
+      })
+      .catch((e) => reject(e));
+  }, 3000);
+});
 
-
-
-//ToDo:Codeforces
-
-const CodeforcesStreakFetcher = (UserName: string) => {
-  return new Promise((resolve,reject) => {
-    const API_BASE_URL = "https://codeforces.com/api/user.status";
-
-    let submission = new Set()
-    const today = new Date();
-    let submitted = false;
-    console.log("crawling...");
-    axios.get(`${API_BASE_URL}?handle=${UserName}`).then((res) => {
-      if(res.data.length === 0){
+const CodeforcesStreakFetcher = (UserName: string) => new Promise((resolve, reject) => {
+  const API_BASE_URL = 'https://codeforces.com/api/user.status';
+  const today = new Date().toLocaleDateString();
+  const submission = new Set();
+  let submitted = false;
+  axios
+    .get(`${API_BASE_URL}?handle=${UserName}`)
+    .then((res) => {
+      if (res.data.length === 0) {
         return resolve(-1);
       }
-      for(let i = res.data.result.length-1; 0 <= i; i--){
+      for (let i = res.data.result.length - 1; i >= 0; i -= 1) {
         const element = res.data.result[i];
-        if(element.verdict === "OK"){
-          //今日投げましたか？
-          const dataTime = new Date(element.creationTimeSeconds*1000);
-          if(!submission.has({ContestId:element.contestid,ProblemIndex:element.index}) && dataTime.toLocaleDateString() === today.toLocaleDateString()){
+        if (element.verdict === 'OK') {
+          //  今日投げましたか？
+          const dataTime = new Date(
+            element.creationTimeSeconds * 1000,
+          ).toLocaleDateString();
+          const SubmissionDetail = {
+            ContestId: element.contestid,
+            ProblemIndex: element.index,
+          };
+          if (!submission.has(SubmissionDetail) && dataTime === today) {
             submitted = true;
           }
-          //setに挿入
-          submission.add({ContestId:element.contestid,ProblemIndex:element.index});
-          
+          submission.add(SubmissionDetail);
         }
       }
-      console.log("crawled!",submitted);
-      return resolve(submitted?1:0);
-    }).catch((e) => {
-      console.log(e);
-      return resolve(-1);
-      //TODO: 後でやる
-    });
-    
-  })
-}
+      return resolve(submitted ? 1 : 0);
+    })
+    .catch((e) => reject(e));
+});
 
-//ToDo: yukicoder
-const yukicoderStreakFetcher = (UserName: string) => {
-  return new Promise((resolve,reject) => {
-    const API_BASE_URL = "https://yukicoder.me/api/v1/solved"
-
-    let submission = new Set()
-    const today = new Date();
-    let submitted = false;
-    console.log("crawling...");
-    axios.get(`${API_BASE_URL}/name/${UserName}/first`).then((res) => {
-      if(res.data.length === 0){
+const yukicoderStreakFetcher = (UserName: string) => new Promise((resolve, reject) => {
+  const API_BASE_URL = 'https://yukicoder.me/api/v1/solved';
+  const today = new Date().toLocaleDateString();
+  const submission = new Set();
+  let submitted = false;
+  axios
+    .get(`${API_BASE_URL}/name/${UserName}/first`)
+    .then((res) => {
+      if (res.data.length === 0) {
         return resolve(-1);
       }
-      console.log(res);
       res.data.forEach((element) => {
-        //今日投げましたか？
-        
-        const dataTime = new Date(element.Date);
-        if(!submission.has({ContestId:element.contestid,ProblemIndex:element.index}) && dataTime.toLocaleDateString() === today.toLocaleDateString()){
+        //  今日投げましたか？
+        const dataTime = new Date(element.Date).toLocaleDateString();
+        //  ToDo:バグなので後で直す
+        const SubmissionDetail = {
+          ContestId: element.contestid,
+          ProblemIndex: element.index,
+        };
+        if (!submission.has(SubmissionDetail) && dataTime === today) {
           submitted = true;
         }
-        //setに挿入
-        submission.add({ContestId:element.contestid,ProblemIndex:element.index});
-      })
-      console.log("crawled!",submitted);
-      return resolve(submitted?1:0);
-    }).catch((e) => {
-      console.log(e);
-      return resolve(-1);
-      //TODO: 後でやる
-    });
-    
-  })
-}
+        submission.add(SubmissionDetail);
+      });
+      return resolve(submitted ? 1 : 0);
+    })
+    .catch((e) => reject(e));
+});
 
+//  ToDo 言語に関するStreakも用意する
 
-//ToDo 言語に関するStreakも用意する
+//  全部を統括するFilter関数
+const StreakFetcher = (CPSite: string, UserName: string) => new Promise((resolve, reject) => {
+  switch (CPSite) {
+    case 'AtCoder':
+      resolve(AtCoderStreakFetcher(UserName));
+      return;
+    case 'Codeforces':
+      resolve(CodeforcesStreakFetcher(UserName));
+      return;
+    case 'yukicoder':
+      resolve(yukicoderStreakFetcher(UserName));
+      return;
+    default:
+      reject();
+  }
+});
 
-//全部を統括するFilter関数
-const FilterOfStreakFetcher = (CPSite:string, UserName:string) => {
-  return new Promise((resolve,reject) => {
-    switch(CPSite){
-      case 'AtCoder':
-        return resolve(AtCoderStreakFetcher(UserName));
-      case 'Codeforces':
-        return resolve(CodeforcesStreakFetcher(UserName));
-      case 'yukicoder':
-        return resolve(yukicoderStreakFetcher(UserName));
-      default:
-        return resolve(-1);
-    }
-  })
-
-}
-export default FilterOfStreakFetcher
+export default StreakFetcher;

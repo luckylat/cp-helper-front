@@ -2,18 +2,18 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Top from './components/pages/Top'
+import Top from './components/pages/Top';
 
-import './assets/index.css'
+import './assets/index.css';
 
-const App = () => (
-  <>
+function App() {
+  return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Top />} />
+        <Route path="/" element={<Top />} />
       </Routes>
     </BrowserRouter>
-  </>
-)
+  );
+}
 
-ReactDOM.render(<App />, document.querySelector('#root'))
+ReactDOM.render(<App />, document.querySelector('#root'));

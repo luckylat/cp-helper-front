@@ -1,10 +1,12 @@
-import Footer from './Footer'
+import Footer from './Footer';
 
-export default{
+export default {
   title: 'organisms/Footer',
-  component: Footer
+  component: Footer,
+};
+
+function Template() {
+  return <Footer />;
 }
 
-const Template = () => <Footer />
-
-export const Default = Template.bind({})
+export const Default = Template.bind({});

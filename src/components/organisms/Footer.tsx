@@ -1,33 +1,27 @@
-import * as React from "react"
+import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles'
-
+import { makeStyles } from '@material-ui/core/styles';
 
 const Theme = {
-  primary: '#8187DC'
-}
+  primary: '#8187DC',
+};
 
 const useStyles = () => makeStyles({
   footer: {
-    //round
+    // round
     borderTopLeftRadius: '5px',
     borderTopRightRadius: '5px',
-
 
     backgroundColor: Theme.primary,
 
     height: '2rem',
-    width:  '100vw',
-  }
-})
+    width: '100vw',
+  },
+});
 
-const Footer = () => {
+function Footer() {
   const classes = useStyles()();
-  return(
-    <>
-      <div className={classes.footer}></div>
-    </>
-  )
+  return <div className={classes.footer} />;
 }
 
-export default Footer
+export default Footer;

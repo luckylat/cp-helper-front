@@ -1,20 +1,23 @@
-import Dropdown from './Dropdown'
+import Dropdown from './Dropdown';
 
 export default {
   title: 'atoms/Dropdown',
-  component: Dropdown
+  component: Dropdown,
+};
+
+function Template(args) {
+  return <Dropdown {...args} />;
 }
 
-const Template = (args) => <Dropdown {...args} />
-
-export const Default = Template.bind({})
+export const Default = Template.bind({});
 Default.args = {
-  items: [{value: "aaa",text: "aaa"},{value: "bbb",text: "bbb"}]
-}
+  items: [
+    { value: 'aaa', text: 'aaa' },
+    { value: 'bbb', text: 'bbb' },
+  ],
+};
 
-export const NoValue = Template.bind({})
+export const NoValue = Template.bind({});
 NoValue.args = {
-  items: [{text: "aaa"},{text: "bbb"}]
-}
-
-
+  items: [{ text: 'aaa' }, { text: 'bbb' }],
+};
