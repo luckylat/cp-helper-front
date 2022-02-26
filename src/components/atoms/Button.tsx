@@ -38,9 +38,7 @@ function Button(props: ButtonProps) {
       color: color || '#ffffff',
     },
   };
-  return (
-    <StyledButton onClick={() => action()}>{label}</StyledButton>
-  );
+  return <StyledButton onClick={() => action()}>{label}</StyledButton>;
 }
 
 export default Button;

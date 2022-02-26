@@ -11,7 +11,7 @@ import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import Dropdown from '../atoms/Dropdown';
 
-import StreakFetcher from '../../utils/Streak';
+import {StreakFetch, CasheDeleter} from '../../utils/Streak';
 
 const StyledDiv = styled.div`
   height: calc(100vh - 140px);
@@ -22,7 +22,7 @@ function Top() {
   const [status, setStatus] = useState('let fill the input field above!');
   const InputData = React.createRef<HTMLInputElement>();
   const TargetedCPSite = React.createRef<HTMLSelectElement>();
-  const ScriptData = () => {
+  const StreakFetcher = () => {
     const UserName = InputData.current.value;
     const SelectedCPSite = TargetedCPSite.current.value;
     //  ToDo:ボタンを押した時、Inputの中身を固定状態にする → クロールが終わったら解除する
@@ -32,7 +32,7 @@ function Top() {
       return;
     }
     setStatus('Fetching...');
-    StreakFetcher(SelectedCPSite, UserName).then((ret) => {
+    StreakFetch(SelectedCPSite, UserName).then((ret) => {
       if (ret === 1) {
         setStatus('Unique accepted');
       } else if (ret === 0) {
@@ -42,6 +42,11 @@ function Top() {
       }
     });
   };
+  const CacheDelete = () => {
+    CasheDeleter().then(() => {
+      console.log("Cache Deleted");
+    })
+  }
 
   const cpSite = {
     AtCoder: 'AtCoder',
@@ -65,7 +70,10 @@ function Top() {
           <Input ref={InputData} placeholder="Username" />
         </Grid>
         <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
-          <Button label="Go!" action={ScriptData} />
+          <Button label="Go!" action={StreakFetcher} />
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
+          <Button label="Cache Delete" action={CacheDelete} />
         </Grid>
         <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
           <div>{status}</div>

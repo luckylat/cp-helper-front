@@ -28,7 +28,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "format": "prettier --write 'src/**/*.tsx'",
-    "lint": "eslint src/**/*.tsx"
+    "lint": "eslint src/**/*.tsx",
+    "lintfix": "eslint src/**/*.tsx --fix"
   },
   "eslintConfig": {
     "extends": [
