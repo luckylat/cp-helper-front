@@ -11,7 +11,7 @@ import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import Dropdown from '../atoms/Dropdown';
 
-import StreakFetcher from '../../utils/Streak';
+import { StreakFetch, CasheDeleter } from '../../utils/Streak';
 
 const StyledDiv = styled.div`
   height: calc(100vh - 140px);
@@ -20,9 +20,10 @@ const StyledDiv = styled.div`
 
 function Top() {
   const [status, setStatus] = useState('let fill the input field above!');
+  const [cacheStatus, setCacheStatus] = useState('');
   const InputData = React.createRef<HTMLInputElement>();
   const TargetedCPSite = React.createRef<HTMLSelectElement>();
-  const ScriptData = () => {
+  const StreakFetcher = () => {
     const UserName = InputData.current.value;
     const SelectedCPSite = TargetedCPSite.current.value;
     //  ToDo:ボタンを押した時、Inputの中身を固定状態にする → クロールが終わったら解除する
@@ -32,7 +33,8 @@ function Top() {
       return;
     }
     setStatus('Fetching...');
-    StreakFetcher(SelectedCPSite, UserName).then((ret) => {
+    setCacheStatus('');
+    StreakFetch(SelectedCPSite, UserName).then((ret) => {
       if (ret === 1) {
         setStatus('Unique accepted');
       } else if (ret === 0) {
@@ -40,6 +42,12 @@ function Top() {
       } else {
         setStatus('Error');
       }
+    });
+  };
+  const CacheDelete = () => {
+    setCacheStatus('Cache Deleting');
+    CasheDeleter().then(() => {
+      setCacheStatus('Cache Deleted');
     });
   };
 
@@ -64,11 +72,17 @@ function Top() {
         <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
           <Input ref={InputData} placeholder="Username" />
         </Grid>
-        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
-          <Button label="Go!" action={ScriptData} />
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '35px' }}>
+          <Button label="Go!" action={StreakFetcher} />
         </Grid>
-        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '35px' }}>
+          <Button label="Cache Delete" action={CacheDelete} />
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '20px' }}>
           <div>{status}</div>
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '20px' }}>
+          <div>{cacheStatus}</div>
         </Grid>
       </StyledDiv>
       <Footer />
