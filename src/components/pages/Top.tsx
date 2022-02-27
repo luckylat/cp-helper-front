@@ -11,7 +11,7 @@ import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import Dropdown from '../atoms/Dropdown';
 
-import {StreakFetch, CasheDeleter} from '../../utils/Streak';
+import { StreakFetch, CasheDeleter } from '../../utils/Streak';
 
 const StyledDiv = styled.div`
   height: calc(100vh - 140px);
@@ -20,6 +20,7 @@ const StyledDiv = styled.div`
 
 function Top() {
   const [status, setStatus] = useState('let fill the input field above!');
+  const [cacheStatus, setCacheStatus] = useState('');
   const InputData = React.createRef<HTMLInputElement>();
   const TargetedCPSite = React.createRef<HTMLSelectElement>();
   const StreakFetcher = () => {
@@ -32,6 +33,7 @@ function Top() {
       return;
     }
     setStatus('Fetching...');
+    setCacheStatus('');
     StreakFetch(SelectedCPSite, UserName).then((ret) => {
       if (ret === 1) {
         setStatus('Unique accepted');
@@ -43,10 +45,11 @@ function Top() {
     });
   };
   const CacheDelete = () => {
+    setCacheStatus('Cache Deleting');
     CasheDeleter().then(() => {
-      console.log("Cache Deleted");
-    })
-  }
+      setCacheStatus('Cache Deleted');
+    });
+  };
 
   const cpSite = {
     AtCoder: 'AtCoder',
@@ -69,14 +72,17 @@ function Top() {
         <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
           <Input ref={InputData} placeholder="Username" />
         </Grid>
-        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '35px' }}>
           <Button label="Go!" action={StreakFetcher} />
         </Grid>
-        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '35px' }}>
           <Button label="Cache Delete" action={CacheDelete} />
         </Grid>
-        <Grid item xs={12} style={{ textAlign: 'center', margin: '50px' }}>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '20px' }}>
           <div>{status}</div>
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: 'center', margin: '20px' }}>
+          <div>{cacheStatus}</div>
         </Grid>
       </StyledDiv>
       <Footer />

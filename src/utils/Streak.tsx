@@ -13,33 +13,35 @@ interface cacher {
 }
 
 //  ToDo: キャッシュを削除する
-export const CasheDeleter = () => new Promise(() => {
+export const CasheDeleter = () => new Promise((resolve) => {
   caches.open(CURRENT_CACHES.font).then((cache) => {
-    cache.keys().then((keyList) => keyList.map((key: Request) => cache.delete(key)));
+    cache.keys().then((keyList) => resolve(keyList.map((key: Request) => cache.delete(key))));
   });
 });
 
+const ACacheDelete = (URL) => new Promise((resolve) => {
+  caches.open(CURRENT_CACHES.font).then((cache) => resolve(cache.delete(URL)));
+});
+
 const StreakCacher = (URL: string) => new Promise<cacher>((resolve) => {
-  caches.open(CURRENT_CACHES.font).then((cache) => cache.match(URL)
-    .then((res) => {
-      if (!res) {
-        return null;
-      }
-      return res.json();
-    })
-    .then((response) => {
-      if (!response) {
-        // 存在しません
-        fetch(URL)
-          .then((res) => {
-            const dat = res.clone().json();
-            if (res)cache.put(URL, res);
-            return dat;
-          }).then((res) => resolve({ cache: false, data: res }));
-      }
-      // 存在します
+  caches.open(CURRENT_CACHES.font).then((cache) => cache.match(URL).then((res) => {
+    if (!res) {
+      return null;
+    }
+    return res.json();
+  }).then((response) => {
+    if (response) {
       return resolve({ cache: true, data: response });
-    }));
+    }
+    return resolve({
+      cache: false,
+      data: fetch(URL).then((res) => {
+        const dat = res.clone().json();
+        if (res) cache.put(URL, res);
+        return dat;
+      }),
+    });
+  }));
 });
 
 //  集合Xに対してStreakが繋がれているかの一連の確認
@@ -66,11 +68,10 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve, reject)
   let epochTimer = 0;
   const Fetcher = setInterval(() => {
     const FetchURL = `${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`;
-    StreakCacher(FetchURL).then((response) => {
-      // ToDo: Cacheが残っているのならSetintevalの時間を0msとする
-      const res = response.data;
+    StreakCacher(FetchURL).then((response) => response.data).then((res) => {
+      //  ToDo: Cacheが残っているのならSetintevalの時間を0msとする
       if (res.length === 0) {
-        caches.delete(FetchURL);
+        ACacheDelete(FetchURL);
         clearInterval(Fetcher);
         resolve(submitted ? 1 : 0);
         return;
@@ -80,6 +81,7 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve, reject)
         clearInterval(Fetcher);
         reject();
       }
+
       epochTimer = res[res.length - 1].epoch_second + 1;
       res.forEach((element) => {
         if (element.result === 'AC') {
