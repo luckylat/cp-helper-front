@@ -69,6 +69,7 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve, reject)
   const Fetcher = setInterval(() => {
     const FetchURL = `${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`;
     StreakCacher(FetchURL).then((response) => {
+      //  eslint-disable-next-line no-console
       console.log(response.cache);
       return response.data;
     }).then((res) => {
