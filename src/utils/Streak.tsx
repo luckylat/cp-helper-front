@@ -68,7 +68,10 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve, reject)
   let epochTimer = 0;
   const Fetcher = setInterval(() => {
     const FetchURL = `${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`;
-    StreakCacher(FetchURL).then((response) => response.data).then((res) => {
+    StreakCacher(FetchURL).then((response) => {
+      console.log(response.cache);
+      return response.data;
+    }).then((res) => {
       //  ToDo: Cacheが残っているのならSetintevalの時間を0msとする
       if (res.length === 0) {
         ACacheDelete(FetchURL);
