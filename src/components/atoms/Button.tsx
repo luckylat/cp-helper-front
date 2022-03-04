@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-interface ButtonProps {
+export interface ButtonProps {
   label: string;
   action: () => void;
   background?: string;

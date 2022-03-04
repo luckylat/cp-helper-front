@@ -1,11 +1,12 @@
-import Input from './Input';
+import Input,{InputProps} from './Input';
+import { Story } from '@storybook/react'
 
 export default {
   title: 'atoms/Input',
   component: Input,
 };
 
-function Template(args) {
+const Template: Story<InputProps> = args => {
   return <Input {...args} />;
 }
 
