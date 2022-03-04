@@ -56,8 +56,6 @@ interface CodeforcesAPI {
   result: inCodeforcesAPI[]
 }
 
-
-
 interface yukicoderAPI{
   Date: string
   ProblemId: string
@@ -156,9 +154,6 @@ const CodeforcesStreakFetcher = (UserName: string) => new Promise((resolve) => {
 
   const FetchURL = `${API_BASE_URL}?handle=${UserName}`;
   NormalFetcher(FetchURL).then((responseData: CodeforcesAPI) => {
-    console.log(responseData);
-    console.log(FetchURL);
-
     //  ToDo: 言語ごとによるFilterが追加された場合にここにfilterをかける
     //  FilteredSubmissionには条件を満たしたSubmissionのみが残る
     const FilteredSubmission: Submission[] = responseData.result.filter((element: inCodeforcesAPI) => element.verdict === 'OK').map((element: inCodeforcesAPI) => ({
@@ -175,7 +170,6 @@ const CodeforcesStreakFetcher = (UserName: string) => new Promise((resolve) => {
 
     return resolve(SubmissionWithDate.has(new Date().toLocaleDateString()) ? 1 : 0);
   });
-
 });
 
 //  https://petstore.swagger.io/?url=https://yukicoder.me/api/swagger.yaml
