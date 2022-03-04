@@ -87,7 +87,6 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
     const Fetcher = setInterval(() => {
       const FetchURL = `${API_BASE_URL}?user=${UserName}&from_second=${epochTimer}`;
       NormalFetcher(FetchURL).then((responseData) => {
-        console.log(responseData);
         if (responseData.length === 0) {
           ACacheDelete(FetchURL);
           clearInterval(Fetcher);
