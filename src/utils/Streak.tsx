@@ -44,6 +44,18 @@ interface AtCoderAPI {
   epoch_second: number
 }
 
+interface inCodeforcesAPI{
+  verdict: string
+  creationTimeSeconds: number
+  contestId: number
+  index: string
+}
+
+interface CodeforcesAPI {
+  status: string
+  result: inCodeforcesAPI[]
+}
+
 interface yukicoderAPI{
   Date: string
   ProblemId: string
@@ -135,37 +147,29 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
 
 //  https://codeforces.com/apiHelp/methods#user.status
 //  submissionにfromがあるため、fromを用意できると嬉しいがある
-const CodeforcesStreakFetcher = (UserName: string) => new Promise((resolve, reject) => {
+const CodeforcesStreakFetcher = (UserName: string) => new Promise((resolve) => {
   const API_BASE_URL = 'https://codeforces.com/api/user.status';
-  const today = new Date().toLocaleDateString();
-  const submission = new Set();
-  let submitted = false;
-  axios
-    .get(`${API_BASE_URL}?handle=${UserName}`)
-    .then((res) => {
-      if (res.data.length === 0) {
-        return resolve(-1);
+  const SubmissionWithProblemId = new Set();
+  const SubmissionWithDate = new Map();
+
+  const FetchURL = `${API_BASE_URL}?handle=${UserName}`;
+  NormalFetcher(FetchURL).then((responseData: CodeforcesAPI) => {
+    //  ToDo: 言語ごとによるFilterが追加された場合にここにfilterをかける
+    //  FilteredSubmissionには条件を満たしたSubmissionのみが残る
+    const FilteredSubmission: Submission[] = responseData.result.filter((element: inCodeforcesAPI) => element.verdict === 'OK').map((element: inCodeforcesAPI) => ({
+      problemId: `${element.contestId}-${element.index}`,
+      date: new Date(
+        element.creationTimeSeconds * 1000,
+      ).toLocaleDateString(),
+    }));
+    FilteredSubmission.forEach((element) => {
+      if (!SubmissionWithProblemId.has(element.problemId)) {
+        SubmissionWithDate.set(element.date, element.problemId);
       }
-      for (let i = res.data.result.length - 1; i >= 0; i -= 1) {
-        const element = res.data.result[i];
-        if (element.verdict === 'OK') {
-          //  今日投げましたか？
-          const dataTime = new Date(
-            element.creationTimeSeconds * 1000,
-          ).toLocaleDateString();
-          const SubmissionDetail = {
-            ContestId: element.contestid,
-            ProblemIndex: element.index,
-          };
-          if (!submission.has(SubmissionDetail) && dataTime === today) {
-            submitted = true;
-          }
-          submission.add(SubmissionDetail);
-        }
-      }
-      return resolve(submitted ? 1 : 0);
-    })
-    .catch((e) => reject(e));
+    });
+
+    return resolve(SubmissionWithDate.has(new Date().toLocaleDateString()) ? 1 : 0);
+  });
 });
 
 //  https://petstore.swagger.io/?url=https://yukicoder.me/api/swagger.yaml
