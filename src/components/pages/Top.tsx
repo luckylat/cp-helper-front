@@ -11,7 +11,7 @@ import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import Dropdown from '../atoms/Dropdown';
 
-import { StreakFetch, CasheDeleter } from '../../utils/Streak';
+import { StreakFetch, StreakCacheDeleter } from '../../utils/Streak';
 
 const StyledDiv = styled.div`
   height: calc(100vh - 140px);
@@ -39,14 +39,12 @@ function Top() {
         setStatus('Unique accepted');
       } else if (ret === 0) {
         setStatus('Not unique accepted');
-      } else {
-        setStatus('Error');
       }
-    });
+    }).catch((e) => setStatus(e));
   };
   const CacheDelete = () => {
     setCacheStatus('Cache Deleting');
-    CasheDeleter().then(() => {
+    StreakCacheDeleter().then(() => {
       setCacheStatus('Cache Deleted');
     });
   };
