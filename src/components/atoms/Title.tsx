@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-interface TitleProps {
+export interface TitleProps {
   value: string;
   size?: number;
 }

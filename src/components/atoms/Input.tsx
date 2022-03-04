@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-interface InputProps {
+export interface InputProps {
   type?: string;
   value?: string;
   placeholder?: string;

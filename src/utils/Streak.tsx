@@ -4,6 +4,7 @@ const CACHE_VERSION = 1;
 const CURRENT_CACHES = {
   font: `font-cache-v${CACHE_VERSION}`,
 };
+const intervalTime = 3000;
 
 //  ToDo:それぞれのサイトに対してのStreakに関する返り値を同じにする
 
@@ -13,7 +14,7 @@ export const StreakCacheDeleter = () => new Promise((resolve) => {
   });
 });
 
-const ACacheDelete = (URL) => new Promise((resolve) => {
+const ACacheDelete = (URL: string) => new Promise((resolve) => {
   caches.open(CURRENT_CACHES.font).then((cache) => resolve(cache.delete(URL)));
 });
 
@@ -31,6 +32,23 @@ const NormalFetcher = (URL: string) => new Promise<any>((resolve) => {
 //  3:それまでsetに入っていなかったもの かつ 提出が今日であるならば、Streakが繋がれていると判断できる
 //  4:そうでなければ、繋がれていない
 
+//  ToDo: Submission型に変換した後は同一関数に投げるようにしたい
+interface Submission{
+  problemId: string
+  date: string
+}
+
+interface AtCoderAPI {
+  result: string
+  problem_id: string
+  epoch_second: number
+}
+
+interface yukicoderAPI{
+  Date: string
+  ProblemId: string
+}
+
 //  一回のみ呼び出し
 //  返り値
 //  1: Streakは繋がっている
@@ -41,10 +59,8 @@ const NormalFetcher = (URL: string) => new Promise<any>((resolve) => {
 //  submissionから得られるオブジェクトの個数は500で固定
 const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
   const API_BASE_URL = 'https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions';
-
   const SubmissionWithProblemId = new Set();
   const SubmissionWithDate = new Map();
-  const intervalTime = 3000;
   let epochTimer = 0;
   //  Cacheを確認する
   caches.open(CURRENT_CACHES.font).then((cache) => {
@@ -67,8 +83,8 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
 
         //  FilteredSubmissionには条件を満たしたSubmissionのみが残る
         //  ToDo: 計算量を想定する
-        const FilteredSubmission = ResponseData.filter((element) => element.result === 'AC').map((element) => ({
-          problemId: element.priblem_id,
+        const FilteredSubmission: Submission[] = ResponseData.filter((element: AtCoderAPI) => element.result === 'AC').map((element: AtCoderAPI) => ({
+          problemId: element.problem_id,
           date: new Date(
             element.epoch_second * 1000,
           ).toLocaleDateString(),
@@ -76,6 +92,7 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
         FilteredSubmission.forEach((element) => {
           if (!SubmissionWithProblemId.has(element.problemId)) {
             SubmissionWithDate.set(element.date, element.problemId);
+            SubmissionWithProblemId.add(element.problemId);
           }
         });
         epochTimer = ResponseData[ResponseData.length - 1].epoch_second + 1;
@@ -90,13 +107,14 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
         if (responseData.length === 0) {
           ACacheDelete(FetchURL);
           clearInterval(Fetcher);
+          //  ToDo: Streakの日数判定はここで得る
           return resolve(SubmissionWithDate.has(new Date().toLocaleDateString()) ? 1 : 0);
         }
 
         //  ToDo: 言語ごとによるFilterが追加された場合にここにfilterをかける
         //  FilteredSubmissionには条件を満たしたSubmissionのみが残る
-        const FilteredSubmission = responseData.filter((element) => element.result === 'AC').map((element) => ({
-          problemId: element.priblem_id,
+        const FilteredSubmission: Submission[] = responseData.filter((element: AtCoderAPI) => element.result === 'AC').map((element: AtCoderAPI) => ({
+          problemId: element.problem_id,
           date: new Date(
             element.epoch_second * 1000,
           ).toLocaleDateString(),
@@ -163,7 +181,7 @@ const yukicoderStreakFetcher = (UserName: string) => new Promise((resolve, rejec
       if (res.data.length === 0) {
         return resolve(-1);
       }
-      res.data.forEach((element) => {
+      res.data.forEach((element: yukicoderAPI) => {
         //  今日投げましたか？
         const dataTime = new Date(element.Date).toLocaleDateString();
         const SubmissionDetail = element.ProblemId;

@@ -21,17 +21,22 @@ const StyledDiv = styled.div`
 function Top() {
   const [status, setStatus] = useState('let fill the input field above!');
   const [cacheStatus, setCacheStatus] = useState('');
-  const InputData = React.createRef<HTMLInputElement>();
-  const TargetedCPSite = React.createRef<HTMLSelectElement>();
+  const InputData = React.useRef<HTMLInputElement>(null);
+  const TargetedCPSite = React.useRef<HTMLSelectElement>(null);
   const StreakFetcher = () => {
-    const UserName = InputData.current.value;
-    const SelectedCPSite = TargetedCPSite.current.value;
-    //  ToDo:ボタンを押した時、Inputの中身を固定状態にする → クロールが終わったら解除する
-
-    if (!UserName) {
+    const InputDataRef = InputData.current;
+    const TargetedCPSiteRef = TargetedCPSite.current;
+    if (!InputDataRef) {
       setStatus('Input has no data');
       return;
     }
+    if (!TargetedCPSiteRef) {
+      return;
+    }
+    const UserName = InputDataRef.value;
+    const SelectedCPSite = TargetedCPSite.current.value;
+    //  ToDo:ボタンを押した時、Inputの中身を固定状態にする → クロールが終わったら解除する
+
     setStatus('Fetching...');
     setCacheStatus('');
     StreakFetch(SelectedCPSite, UserName).then((ret) => {

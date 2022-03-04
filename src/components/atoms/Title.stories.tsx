@@ -1,11 +1,12 @@
-import Title from './Title';
+import Title,{TitleProps} from './Title';
+import { Story } from '@storybook/react'
 
 export default {
   title: 'atoms/Title',
   component: Title,
 };
 
-function Template(args) {
+const Template: Story<TitleProps> = args => {
   return <Title {...args} />;
 }
 

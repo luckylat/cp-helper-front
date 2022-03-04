@@ -6,8 +6,8 @@ interface InputItem {
   text: string;
 }
 
-interface DropdownProps {
-  items?: InputItem[];
+export interface DropdownProps {
+  items: InputItem[];
 }
 
 const StyledSelect = styled.select`

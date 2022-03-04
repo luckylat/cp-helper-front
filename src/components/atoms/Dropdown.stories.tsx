@@ -1,11 +1,12 @@
-import Dropdown from './Dropdown';
+import Dropdown,{DropdownProps} from './Dropdown';
+import { Story } from '@storybook/react'
 
 export default {
   title: 'atoms/Dropdown',
   component: Dropdown,
 };
 
-function Template(args) {
+const Template: Story<DropdownProps> = args => {
   return <Dropdown {...args} />;
 }
 
