@@ -32,6 +32,7 @@ module.exports = {
 
     'react/prop-types': 'off',
     'react/require-default-props': 'off',
+    'react/jsx-props-no-spreading': 'off',
 
     'react/jsx-filename-extension': [
       'error',
@@ -49,5 +50,16 @@ module.exports = {
         'tsx':'never',
       },
     ],
+
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        'devDependencies': [
+          '**/*.stories.*',
+          '**/.storybook/**/*.*'
+        ],
+        'peerDependencies': true
+      }
+    ]
   },
 };
