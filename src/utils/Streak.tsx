@@ -101,12 +101,13 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
             element.epoch_second * 1000,
           ).toLocaleDateString(),
         }));
-        FilteredSubmission.forEach((element) => {
+        for (const element of FilteredSubmission) {
           if (!SubmissionWithProblemId.has(element.problemId)) {
+            
             SubmissionWithDate.set(element.date, element.problemId);
             SubmissionWithProblemId.add(element.problemId);
           }
-        });
+        }
         epochTimer = ResponseData[ResponseData.length - 1].epoch_second + 1;
       }
     });
@@ -134,6 +135,7 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
         FilteredSubmission.forEach((element) => {
           if (!SubmissionWithProblemId.has(element.problemId)) {
             SubmissionWithDate.set(element.date, element.problemId);
+            SubmissionWithProblemId.add(element.problemId);
           }
         });
         epochTimer = responseData[responseData.length - 1].epoch_second + 1;
