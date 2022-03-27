@@ -134,6 +134,7 @@ const AtCoderStreakFetcher = (UserName: string) => new Promise((resolve) => {
         FilteredSubmission.forEach((element) => {
           if (!SubmissionWithProblemId.has(element.problemId)) {
             SubmissionWithDate.set(element.date, element.problemId);
+            SubmissionWithProblemId.add(element.problemId);
           }
         });
         epochTimer = responseData[responseData.length - 1].epoch_second + 1;
