@@ -1,4 +1,5 @@
 const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
@@ -37,29 +38,29 @@ module.exports = {
     'react/jsx-filename-extension': [
       'error',
       {
-        extensions: ['.jsx','tsx']
-      }
+        extensions: ['.jsx', '.tsx'],
+      },
     ],
 
     'import/extensions': [
       'error', 'always',
       {
-        'js':'never',
-        'jsx':'never',
-        'ts':'never',
-        'tsx':'never',
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
       },
     ],
 
     'import/no-extraneous-dependencies': [
       'error',
       {
-        'devDependencies': [
+        devDependencies: [
           '**/*.stories.*',
-          '**/.storybook/**/*.*'
+          '**/.storybook/**/*.*',
         ],
-        'peerDependencies': true
-      }
-    ]
+        peerDependencies: true,
+      },
+    ],
   },
 };
